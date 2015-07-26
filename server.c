@@ -2,7 +2,7 @@
 #include<linux/inet.h>  
 #include<linux/socket.h>  
 #include<net/sock.h>  
-  
+#include<linux/string.h>
 #include<linux/init.h>  
 #include<linux/module.h>  
   
@@ -81,11 +81,34 @@ int myserver(void){
     printk("receive message:\n %s\n",recvbuf);  
     printk("receive size=%d\n",ret);  
   
+
+//send message///////////////////////////////
+
+    char sendbuf[]={"HTTP/1.1 200 OK\r\n Content-Type: text/html\r\n\r\n<html><body>asdasdasdasd</body></html>"};
+    int len=sizeof("HTTP/1.1 200 OK\r\n Content-Type: text/html\r\n\r\n<html><body>asdasdasdasd</body></html>");  
+    struct kvec vec2;  
+    struct msghdr msg2;  
+      
+    vec2.iov_base=sendbuf;  
+    vec2.iov_len=len;  
+    memset(&msg2,0,sizeof(msg2));  
+      
+    ret= kernel_sendmsg(client_sock,&msg2,&vec2,1,len);  
+
+
+
+   
+
     sock_release(sock);  
-    sock_release(client_sock);  
+    sock_release(client_sock);
+
     return ret;  
 }  
   
+
+
+
+
 static int server_init(void){  
     printk("server init:\n");  
     myserver();  
