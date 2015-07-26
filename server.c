@@ -24,7 +24,8 @@ int myserver(void){
   
     /*create a socket*/  
     ret=sock_create_kern(AF_INET, SOCK_STREAM,0,&sock);  
-    if(ret){  
+    if(ret)
+    {  
         printk("server:socket_create error!\n");  
     }  
     printk("server:socket_create ok!\n");  
@@ -32,13 +33,15 @@ int myserver(void){
     /*set the socket can be reused*/  
     int val=1;  
     ret= kernel_setsockopt(sock,SOL_SOCKET,SO_REUSEADDR,(char *)&val,sizeof(val));  
-    if(ret){  
+    if(ret)
+    {  
         printk("kernel_setsockopt error!!!!!!!!!!!\n");  
     }  
   
     /*bind the socket*/  
     ret=sock->ops->bind(sock,(struct sockaddr *)&s_addr,sizeof(struct sockaddr_in));  
-    if(ret<0){  
+    if(ret<0)
+    {  
         printk("server: bind error\n");  
         return ret;  
     }  
@@ -46,61 +49,68 @@ int myserver(void){
   
     /*listen*/  
     ret=sock->ops->listen(sock,10);  
-    if(ret<0){  
+    if(ret<0)
+    {  
         printk("server: listen error\n");  
         return ret;  
     }  
     printk("server:listen ok!\n");  
   
     //ret=sock->ops->accept(sock,client_sock,10);  
-    ret = kernel_accept(sock,&client_sock,10);  
-    if(ret<0){  
-        printk("server:accept error!\n");  
-        return ret;  
-    }  
+    while(1)
+    {
+        ret = kernel_accept(sock,&client_sock,10);  
+        if(ret<0)
+        {  
+            printk("server:accept error!\n");  
+            return ret;  
+        }  
       
-    printk("server: accept ok, Connection Established\n");  
+        printk("server: accept ok, Connection Established\n");  
+          
+        /*kmalloc a receive buffer*/  
+        char *recvbuf=NULL;  
+        recvbuf=kmalloc(1024,GFP_KERNEL);  
+        if(recvbuf==NULL)
+        {  
+            printk("server: recvbuf kmalloc error!\n");  
+            return -1;  
+        }  
+        memset(recvbuf, 0, sizeof(recvbuf));  
+          
+        /*receive message from client*/  
+        struct kvec vec;  
+        struct msghdr msg;  
+        memset(&vec,0,sizeof(vec));  
+        memset(&msg,0,sizeof(msg));  
+        vec.iov_base=recvbuf;  
+        vec.iov_len=1024;  
+        ret=kernel_recvmsg(client_sock,&msg,&vec,1,1024,0);  
+        printk("receive message:\n %s\n",recvbuf);  
+        printk("receive size=%d\n",ret);  
       
-    /*kmalloc a receive buffer*/  
-    char *recvbuf=NULL;  
-    recvbuf=kmalloc(1024,GFP_KERNEL);  
-    if(recvbuf==NULL){  
-        printk("server: recvbuf kmalloc error!\n");  
-        return -1;  
-    }  
-    memset(recvbuf, 0, sizeof(recvbuf));  
-      
-    /*receive message from client*/  
-    struct kvec vec;  
-    struct msghdr msg;  
-    memset(&vec,0,sizeof(vec));  
-    memset(&msg,0,sizeof(msg));  
-    vec.iov_base=recvbuf;  
-    vec.iov_len=1024;  
-    ret=kernel_recvmsg(client_sock,&msg,&vec,1,1024,0);  
-    printk("receive message:\n %s\n",recvbuf);  
-    printk("receive size=%d\n",ret);  
-  
 
-//send message///////////////////////////////
+        //send message///////////////////////////////
 
-    char sendbuf[]={"HTTP/1.1 200 OK\r\n Content-Type: text/html\r\n\r\n<html><body>asdasdasdasd</body></html>"};
-    int len=sizeof("HTTP/1.1 200 OK\r\n Content-Type: text/html\r\n\r\n<html><body>asdasdasdasd</body></html>");  
-    struct kvec vec2;  
-    struct msghdr msg2;  
-      
-    vec2.iov_base=sendbuf;  
-    vec2.iov_len=len;  
-    memset(&msg2,0,sizeof(msg2));  
-      
-    ret= kernel_sendmsg(client_sock,&msg2,&vec2,1,len);  
+        char sendbuf[]={"HTTP/1.1 200 OK\r\n Content-Type: text/html\r\n\r\n<html><body>asdasdasdasd</body></html>"};
+        int len=sizeof("HTTP/1.1 200 OK\r\n Content-Type: text/html\r\n\r\n<html><body>asdasdasdasd</body></html>");  
+        struct kvec vec2;  
+        struct msghdr msg2;  
+          
+        vec2.iov_base=sendbuf;  
+        vec2.iov_len=len;  
+        memset(&msg2,0,sizeof(msg2));  
+          
+        ret= kernel_sendmsg(client_sock,&msg2,&vec2,1,len);  
 
 
 
-   
-
+       
+        sock_release(client_sock);
+    }
+    
     sock_release(sock);  
-    sock_release(client_sock);
+    
 
     return ret;  
 }  
