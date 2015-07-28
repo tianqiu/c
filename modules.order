@@ -1,1 +1,3 @@
 kernel//c/server.ko
+kernel//c/paramirq.ko
+kernel//c/interrupt.ko
