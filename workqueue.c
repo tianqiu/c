@@ -1,60 +1,101 @@
-    #include <linux/module.h> 
-    #include <linux/init.h> 
-    #include <linux/kernel.h> 
+ #include <linux/init.h>
     #include <linux/fs.h> 
-    #include <linux/workqueue.h> 
-    #include <linux/slab.h> 
-    //  定义一个工作队列指针  
-    static struct workqueue_struct *my_wq;  
-    //  为了传递数据，在work_struct结构体外又包含了一个结构体，可以通过结构体指针实现多态  
-    //  work_struct类型的变量必须是work_struct_data结构体的第一个变量  
-    struct work_struct_data  
-    {  
-            struct work_struct my_work;         //  表示一个工作  
-           void *data;                              //  传给处理函数的数据  
-    } *wsdata;  
-    //  工作队列处理函数  
-    static void work_handler(struct work_struct *work)  
-    {  
-            //  将work_struct结构体指针强行转换为work_struct_data结构体指针  
-            struct work_struct_data *wsdata = (struct work_struct_data *)work;  
-           //  输出传递的数据  
-            printk(KERN_ALERT "work_handler data:%s\n", (char*)wsdata->data);  
-    }  
-    //  驱动程序的初始化函数  
-    static int _init demo_init(void)  
-    {  
-     
-            int ret = 0;  
-    //  创建工作队列  
-            my_wq = create_workqueue("my_queue");  
-            if (my_wq)  
-            {  
-                  //  动态为work_struct_data结构体分配内存空间  
-                  wsdata = (struct work_struct_data *) kmalloc(sizeof(struct work_struct_data),  
-                             GFP_KERNEL);  
-                  //  设置要传递的数据  
-                  wsdata->data = (char*)"hello world";  
-                  if (wsdata)  
-                  {  
-                         //  初始化work_struct类型的变量（主要是指定处理函数）  
-                         INIT_WORK(&wsdata->my_work, work_handler);  
-                         //  将work添加到刚创建的工作队列中  
-                         ret = queue_work(my_wq, &wsdata->my_work);  
-                  }  
-            }  
-            printk(KERN_ALERT "demo_init.\n");  
-            return ret;  
-    }  
-    //  驱动程序的卸载函数  
-    static void _exit demo_exit(void)  
-    {  
-           //  检测工作队列中的工作是否都完成了  
-           flush_workqueue(my_wq);  
-           //  销毁工作队列  
-           destroy_workqueue(my_wq);  
-           printk(KERN_ALERT "demo_exit.\n");  
-    }  
-    MODULE_LICENSE("GPL");  
-    module_init(demo_init);  
-    module_exit(demo_exit);  
+#include <linux/kernel.h>
+#include <linux/slab.h>
+#include <linux/module.h>
+#include <linux/workqueue.h>
+MODULE_AUTHOR("Mike Feng");
+
+/*测试数据结构*/
+
+struct my_data
+
+{
+
+         struct work_struct my_work;
+
+         int value; 
+
+};
+
+struct workqueue_struct *wq=NULL;
+
+struct work_struct work_queue;
+
+/*初始化我们的测试数据*/
+
+struct my_data* init_data(struct my_data *md)
+
+{
+
+         md=(struct my_data*)kmalloc(sizeof(struct my_data),GFP_KERNEL);
+
+         md->value=1;
+
+         md->my_work=work_queue;
+
+         return md;
+
+}
+
+/*工作队列函数*/
+
+static void work_func(struct work_struct *work)
+
+{
+
+         struct my_data *md=container_of(work,struct my_data,my_work);
+
+         printk("<2>""Thevalue of my data is:%d\n",md->value);
+
+}
+
+static __init int work_init(void)
+
+{
+
+         struct my_data *md=NULL;
+
+         struct my_data *md2=NULL;
+
+         md2=init_data(md2);
+
+         md=init_data(md);     
+
+         md2->value=20;
+
+         md->value=10;
+
+         /*第一种方式：使用统默认的workqueue队列——keventd_wq，直接调度*/
+
+         INIT_WORK(&md->my_work,work_func);
+
+         schedule_work(&md->my_work);
+
+ 
+
+         /*第二种方式：创建自己的工作队列，加入工作到工作队列（加入内核就对其调度执行）*/
+
+         wq=create_workqueue("test");
+
+         INIT_WORK(&md2->my_work,work_func);
+
+         queue_work(wq,&md2->my_work);    
+
+         return 0;
+
+}
+
+static void work_exit(void)
+
+{
+
+         /*工作队列销毁*/
+         //flush_workqueue(wq);
+         //destroy_workqueue(wq);
+         printk(KERN_ALERT "demo_exit.\n");
+}
+
+module_init(work_init);
+
+module_exit(work_exit);
