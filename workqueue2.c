@@ -11,14 +11,14 @@
     struct work_struct_data  
     {  
             struct work_struct my_work;         //  表示一个工作  
-           void *data;                              //  传给处理函数的数据  
+            void *data;                              //  传给处理函数的数据  
     } *wsdata,*wsdata2;  
     //  工作队列处理函数  
     static void work_handler(struct work_struct *work)  
     {  
             //  将work_struct结构体指针强行转换为work_struct_data结构体指针  
             struct work_struct_data *wsdata = (struct work_struct_data *)work;  
-           //  输出传递的数据  
+            //  输出传递的数据  
             printk(KERN_ALERT "work_handler data:%s\n", (char*)wsdata->data);  
     }  
     //  驱动程序的初始化函数  
@@ -26,7 +26,7 @@
     {  
      
             int ret = 0;  
-    //  创建工作队列  
+             //  创建工作队列  
             my_wq = create_workqueue("my_queue");  
             if (my_wq) 
             {  
@@ -39,13 +39,13 @@
                   wsdata->data = (char*)"hello world";  
                   wsdata2->data = (char*)"hello world222";
                   if (wsdata &&wsdata2)  
-                  {  
-                         //  初始化work_struct类型的变量（主要是指定处理函数）  
-                         INIT_WORK(&wsdata->my_work, work_handler);  
-                         INIT_WORK(&wsdata2->my_work, work_handler); 
-                         //  将work添加到刚创建的工作队列中  
-                         ret = queue_work(my_wq, &wsdata->my_work);  
-                         ret = queue_work(my_wq, &wsdata2->my_work);
+                  {
+                      //  初始化work_struct类型的变量（主要是指定处理函数）  
+                      INIT_WORK(&wsdata->my_work, work_handler);  
+                      INIT_WORK(&wsdata2->my_work, work_handler); 
+                      //  将work添加到刚创建的工作队列中  
+                      ret = queue_work(my_wq, &wsdata->my_work);  
+                      ret = queue_work(my_wq, &wsdata2->my_work);
                   }  
             }  
             printk(KERN_ALERT "demo_init.\n");  
