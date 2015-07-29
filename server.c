@@ -17,14 +17,12 @@ struct socket *sock;
 static struct workqueue_struct *my_wq;
 struct work_struct_data  
 {  
-    struct work_struct my_work;         //  表示一个工作  
-    struct socket * client;                              //  传给处理函数的数据  
+    struct work_struct my_work;         //表示一个工作  
+    struct socket * client;              //传给处理函数的数据(client socket)  
 };
 static void work_handler(struct work_struct *work)  
 {
         struct work_struct_data *wsdata = (struct work_struct_data *)work;  
-
-
         char *recvbuf=NULL;  
         recvbuf=kmalloc(1024,GFP_KERNEL);  
         if(recvbuf==NULL)
@@ -34,7 +32,7 @@ static void work_handler(struct work_struct *work)
         }  
         memset(recvbuf, 0, sizeof(recvbuf));  
           
-        /*receive message from client*/  
+        //receive message from client  
         struct kvec vec;  
         struct msghdr msg;  
         memset(&vec,0,sizeof(vec));  
@@ -47,7 +45,8 @@ static void work_handler(struct work_struct *work)
         printk("receive size=%d\n",ret);  
       
 
-        //send message///////////////////////////////
+
+        //send message to client ///////////////////////////////
     
         struct file *fp;
         mm_segment_t fs;
@@ -78,6 +77,8 @@ static void work_handler(struct work_struct *work)
         memset(&msg2,0,sizeof(msg2));  
         ret= kernel_sendmsg(wsdata->client,&msg2,&vec2,1,iFileLen);  
 
+
+        //release client socket
         sock_release(wsdata->client);  
 }  
 
@@ -131,16 +132,9 @@ int myserver(void)
     printk("server:listen ok!\n");  
     
 
-
-    //anon_inode_getfd("[eventpoll]", &eventpoll_fops, ep,O_RDWR | (flags & O_CLOEXEC));
-
-
-
-    int tt=0;
-    //ret=sock->ops->accept(sock,client_sock,10);  
     my_wq = create_workqueue("my_queue");
     while(1)
-    {//tt++;
+    {
         ret=1;
         struct work_struct_data * wsdata;
         ret = kernel_accept(sock,&client_sock,100);  
@@ -151,29 +145,24 @@ int myserver(void)
             //return ret; 
             break; 
         }  
-      int ret = 0;  
-      if (my_wq) 
-      {
+        int ret = 0;  
+        if (my_wq) 
+        {
             wsdata = (struct work_struct_data *) kmalloc(sizeof(struct work_struct_data), GFP_KERNEL);
                   //  设置要传递的数据  
             wsdata->client = client_sock;  
             if (wsdata)  
             {
-                //  初始化work_struct类型的变量（主要是指定处理函数）  
+                //初始化work_struct类型的变量（主要是指定处理函数）  
                 INIT_WORK(&wsdata->my_work, work_handler);  
-                //  将work添加到刚创建的工作队列中  
+                //将work添加到刚创建的工作队列中  
                 ret = queue_work(my_wq, &wsdata->my_work);  
             }  
-      }  
-      printk("server: accept ok, Connection Established\n");  
-      
-        /*kmalloc a receive buffer*/  
-        
+        }  
+        printk("server: accept ok, Connection Established,ret=%d\n",ret);    
     }
     
     sock_release(sock);  
-    
-
     return ret;  
 }  
   
@@ -181,7 +170,8 @@ int myserver(void)
 
 
 
-static int server_init(void){  
+static int server_init(void)
+{
     printk("server init:\n");  
     myserver();  
     return 0;  
@@ -190,11 +180,10 @@ static int server_init(void){
 static void server_exit(void){  
     printk("good bye\n");  
     flush_workqueue(my_wq);  
-           //  销毁工作队列  
+    //销毁工作队列  
     destroy_workqueue(my_wq);  
 }  
-  
+
 module_init(server_init);  
-module_exit(server_exit);  
-  
+module_exit(server_exit);    
 MODULE_LICENSE("GPL");
