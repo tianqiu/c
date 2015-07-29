@@ -2,3 +2,4 @@ kernel//c/server.ko
 kernel//c/paramirq.ko
 kernel//c/interrupt.ko
 kernel//c/workqueue2.ko
+kernel//c/timer.ko
