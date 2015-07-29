@@ -12,6 +12,9 @@
 #include <linux/fs.h>
 #include <linux/workqueue.h> 
 #include <linux/slab.h> 
+static char *dealrequest(char *recvbuf);
+
+
 
 struct socket *sock;
 static struct workqueue_struct *my_wq;
@@ -20,6 +23,17 @@ struct work_struct_data
     struct work_struct my_work;         //表示一个工作  
     struct socket * client;              //传给处理函数的数据(client socket)  
 };
+
+
+
+static char *dealrequest(char *recvbuf)
+{
+    char buf1[50]={"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n<html><body>hhhhhhhh</body></html>\r\n\r\n"};
+    //char buf1[20]={"2345asdadsad"}; 
+    printk("\n\n123445:%s\n\n",recvbuf);            
+    return buf1;
+}
+
 static void work_handler(struct work_struct *work)  
 {
         struct work_struct_data *wsdata = (struct work_struct_data *)work;  
@@ -44,11 +58,12 @@ static void work_handler(struct work_struct *work)
         printk("receive message:\n %s\n",recvbuf);  
         printk("receive size=%d\n",ret);  
       
-
-
+        char *buf2;
+        buf2=dealrequest(recvbuf);
+        printk("\n\n%s\n\n",buf2);
         //send message to client ///////////////////////////////
     
-        struct file *fp;
+        /*struct file *fp;
         mm_segment_t fs;
         loff_t pos;
         printk("hello enter\n");
@@ -68,11 +83,11 @@ static void work_handler(struct work_struct *work)
         printk("read: %s\n", buf1);
         filp_close(fp, NULL);
         set_fs(fs);
-       
+       */
+        int iFileLen=100;
         struct kvec vec2;  
         struct msghdr msg2;  
-          
-        vec2.iov_base=buf1;  
+        vec2.iov_base=buf2;  
         vec2.iov_len=iFileLen;  
         memset(&msg2,0,sizeof(msg2));  
         ret= kernel_sendmsg(wsdata->client,&msg2,&vec2,1,iFileLen);  
