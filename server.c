@@ -13,34 +13,89 @@
 #include <linux/workqueue.h> 
 #include <linux/slab.h> 
 
+struct socket *sock;
 static struct workqueue_struct *my_wq;
 struct work_struct_data  
 {  
     struct work_struct my_work;         //  表示一个工作  
-    void *data;                              //  传给处理函数的数据  
+    struct socket * client;                              //  传给处理函数的数据  
 };
 static void work_handler(struct work_struct *work)  
 {
-    struct work_struct_data *wsdata = (struct work_struct_data *)work;  
-    //  输出传递的数据  
-    printk(KERN_ALERT "work_handler data:%s\n", (char*)wsdata->data);  
+        struct work_struct_data *wsdata = (struct work_struct_data *)work;  
+
+
+        char *recvbuf=NULL;  
+        recvbuf=kmalloc(1024,GFP_KERNEL);  
+        if(recvbuf==NULL)
+        {  
+            printk("server: recvbuf kmalloc error!\n");  
+            return ;  
+        }  
+        memset(recvbuf, 0, sizeof(recvbuf));  
+          
+        /*receive message from client*/  
+        struct kvec vec;  
+        struct msghdr msg;  
+        memset(&vec,0,sizeof(vec));  
+        memset(&msg,0,sizeof(msg));  
+        vec.iov_base=recvbuf;  
+        vec.iov_len=1024;  
+        int ret=0;
+        ret=kernel_recvmsg(wsdata->client,&msg,&vec,1,1024,0);  
+        printk("receive message:\n %s\n",recvbuf);  
+        printk("receive size=%d\n",ret);  
+      
+
+        //send message///////////////////////////////
+    
+        struct file *fp;
+        mm_segment_t fs;
+        loff_t pos;
+        printk("hello enter\n");
+        fp = filp_open("/c/index3.html", O_RDWR | O_CREAT, 0644);
+        if (IS_ERR(fp)) {
+        printk("create file error\n");
+        return;
+        }
+        int iFileLen = 0;
+        iFileLen = vfs_llseek(fp, 0, SEEK_END);
+        printk("lenshi:%d", iFileLen);
+        char buf1[iFileLen];    
+        fs = get_fs();
+        set_fs(KERNEL_DS);
+        pos = 0;
+        vfs_read(fp, buf1, iFileLen, &pos);
+        printk("read: %s\n", buf1);
+        filp_close(fp, NULL);
+        set_fs(fs);
+       
+        struct kvec vec2;  
+        struct msghdr msg2;  
+          
+        vec2.iov_base=buf1;  
+        vec2.iov_len=iFileLen;  
+        memset(&msg2,0,sizeof(msg2));  
+        ret= kernel_sendmsg(wsdata->client,&msg2,&vec2,1,iFileLen);  
+
+        sock_release(wsdata->client);  
 }  
 
 
 int myserver(void)
 {        
-    struct socket *sock,*client_sock;  
+    struct socket *client_sock;  
     struct sockaddr_in s_addr;  
-    unsigned short portnum=8890;  
+    unsigned short portnum=8888;  
     int ret=0;  
-  
+
     memset(&s_addr,0,sizeof(s_addr));  
     s_addr.sin_family=AF_INET;  
     s_addr.sin_port=htons(portnum);  
     s_addr.sin_addr.s_addr=htonl(INADDR_ANY);  
     
-    sock=(struct socket *)kmalloc(sizeof(struct socket),GFP_KERNEL);  
-    client_sock=(struct socket *)kmalloc(sizeof(struct socket),GFP_KERNEL);  
+    sock=(struct socket *)kmalloc(sizeof(struct socket),GFP_KERNEL);
+    client_sock=(struct socket *)kmalloc(sizeof(struct socket),GFP_KERNEL);   
     /*create a socket*/  
     ret=sock_create_kern(AF_INET, SOCK_STREAM,0,&sock);  
     if(ret)
@@ -81,73 +136,39 @@ int myserver(void)
 
 
 
-
+    int tt=0;
     //ret=sock->ops->accept(sock,client_sock,10);  
+    my_wq = create_workqueue("my_queue");
     while(1)
-    {
-        ret = kernel_accept(sock,&client_sock,10);  
+    {//tt++;
+        ret=1;
+        struct work_struct_data * wsdata;
+        ret = kernel_accept(sock,&client_sock,100);  
+        printk("server:accept ing!,ret=%d\n",ret); 
         if(ret<0)
         {  
-            printk("server:accept error!\n");  
-            return ret;  
+            printk("server:accept error!,ret=%d\n",ret);  
+            //return ret; 
+            break; 
         }  
+      int ret = 0;  
+      if (my_wq) 
+      {
+            wsdata = (struct work_struct_data *) kmalloc(sizeof(struct work_struct_data), GFP_KERNEL);
+                  //  设置要传递的数据  
+            wsdata->client = client_sock;  
+            if (wsdata)  
+            {
+                //  初始化work_struct类型的变量（主要是指定处理函数）  
+                INIT_WORK(&wsdata->my_work, work_handler);  
+                //  将work添加到刚创建的工作队列中  
+                ret = queue_work(my_wq, &wsdata->my_work);  
+            }  
+      }  
+      printk("server: accept ok, Connection Established\n");  
       
-        printk("server: accept ok, Connection Established\n");  
-          
         /*kmalloc a receive buffer*/  
-        char *recvbuf=NULL;  
-        recvbuf=kmalloc(1024,GFP_KERNEL);  
-        if(recvbuf==NULL)
-        {  
-            printk("server: recvbuf kmalloc error!\n");  
-            return -1;  
-        }  
-        memset(recvbuf, 0, sizeof(recvbuf));  
-          
-        /*receive message from client*/  
-        struct kvec vec;  
-        struct msghdr msg;  
-        memset(&vec,0,sizeof(vec));  
-        memset(&msg,0,sizeof(msg));  
-        vec.iov_base=recvbuf;  
-        vec.iov_len=1024;  
-        ret=kernel_recvmsg(client_sock,&msg,&vec,1,1024,0);  
-        printk("receive message:\n %s\n",recvbuf);  
-        printk("receive size=%d\n",ret);  
-      
-
-        //send message///////////////////////////////
-    
-        struct file *fp;
-        mm_segment_t fs;
-        loff_t pos;
-        printk("hello enter\n");
-        fp = filp_open("/c/index3.html", O_RDWR | O_CREAT, 0644);
-        if (IS_ERR(fp)) {
-        printk("create file error\n");
-        return -1;
-        }
-        int iFileLen = 0;
-        iFileLen = vfs_llseek(fp, 0, SEEK_END);
-        printk("lenshi:%d", iFileLen);
-        char buf1[iFileLen];    
-        fs = get_fs();
-        set_fs(KERNEL_DS);
-        pos = 0;
-        vfs_read(fp, buf1, iFileLen, &pos);
-        printk("read: %s\n", buf1);
-        filp_close(fp, NULL);
-        set_fs(fs);
-       
-        struct kvec vec2;  
-        struct msghdr msg2;  
-          
-        vec2.iov_base=buf1;  
-        vec2.iov_len=iFileLen;  
-        memset(&msg2,0,sizeof(msg2));  
-        ret= kernel_sendmsg(client_sock,&msg2,&vec2,1,len);  
-
-        sock_release(client_sock);
+        
     }
     
     sock_release(sock);  
@@ -168,6 +189,9 @@ static int server_init(void){
   
 static void server_exit(void){  
     printk("good bye\n");  
+    flush_workqueue(my_wq);  
+           //  销毁工作队列  
+    destroy_workqueue(my_wq);  
 }  
   
 module_init(server_init);  
