@@ -12,7 +12,7 @@
 #include <linux/fs.h>
 #include <linux/workqueue.h> 
 #include <linux/slab.h> 
-static char *dealrequest(char *recvbuf);
+char * dealrequest(char *recvbuf,char *buf2);
 
 
 
@@ -26,12 +26,17 @@ struct work_struct_data
 
 
 
-static char *dealrequest(char *recvbuf)
+char * dealrequest(char *recvbuf,char *buf2)
 {
-    char buf1[50]={"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n<html><body>hhhhhhhh</body></html>\r\n\r\n"};
+    //char buf1[]={"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n<html><body><p>hhhhhhh</p></body></html>"};
+    char *b="HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n<html><body><p>hhhhhhh</p></body></html>";
     //char buf1[20]={"2345asdadsad"}; 
-    printk("\n\n123445:%s\n\n",recvbuf);            
-    return buf1;
+    //printk("\nbuf1==%s\n",buf1);
+    printk("B de dizhi:%d",b);
+    return b;
+    //printk("\n\n123445:%s\n\n",recvbuf);
+    //strcpy(buf2,buf1);
+    //printk("\n\nbuf2=:%send\n\n",buf2);     
 }
 
 static void work_handler(struct work_struct *work)  
@@ -59,10 +64,12 @@ static void work_handler(struct work_struct *work)
         printk("receive size=%d\n",ret);  
       
         char *buf2;
-        buf2=dealrequest(recvbuf);
+        buf2=dealrequest(recvbuf,buf2);
+         printk("\nbuf2 de dihzhi:%d\n",buf2);
         printk("\n\n%s\n\n",buf2);
+        return;
         //send message to client ///////////////////////////////
-    
+        
         /*struct file *fp;
         mm_segment_t fs;
         loff_t pos;
@@ -84,13 +91,16 @@ static void work_handler(struct work_struct *work)
         filp_close(fp, NULL);
         set_fs(fs);
        */
-        int iFileLen=100;
+        int len;
+        //iFileLen=sizeof(buf2);
+        len=strlen(buf2)*sizeof(char);
+        printk("\n33==%s\nlen=%d\n",buf2,len);
         struct kvec vec2;  
         struct msghdr msg2;  
         vec2.iov_base=buf2;  
-        vec2.iov_len=iFileLen;  
+        vec2.iov_len=len;  
         memset(&msg2,0,sizeof(msg2));  
-        ret= kernel_sendmsg(wsdata->client,&msg2,&vec2,1,iFileLen);  
+        ret= kernel_sendmsg(wsdata->client,&msg2,&vec2,1,len); 
 
 
         //release client socket
@@ -99,7 +109,7 @@ static void work_handler(struct work_struct *work)
 
 
 int myserver(void)
-{        
+{      
     struct socket *client_sock;  
     struct sockaddr_in s_addr;  
     unsigned short portnum=8888;  
