@@ -1,37 +1,33 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 char * deal(char *a);
 
 
-char * deal(char *a)
+char * deal(char *request)
 {
-	char b[]="qqqqddssddsdsadaasddddddddddddddddddddddddddddddddddqqqqqreqqqq";
-	//printf("%s",a);
-	//b[0]='a';
-	//b[1]='b';''
-	//printf("\na==%d\n",a);
-	//*b='a';
-	//printf("b==%d\n",b);
-	 char * d=b;
-	//printf ("\nb=%s\nd=%s\n",b,d);
-	 printf("ac");
-	return d;
+	char *n=NULL;
+	//char b[]="qqqqddssddsdsadaasddddddddddddddddddddddddddddddddddqqqqqreqqqq";
+	//n=(char *)malloc(sizeof(b));
+	//strcpy(n,b);
+	printf("%s\n",request);
+	char *p;
+	p=strtok(request,"8");
+	printf("\n%s\n",p );
+
+	p=strtok(NULL,"8");
+	printf("\n%s\n",p );
+	return n;
 }
 
 
 int main ()
 {
-char a[]={"xxx"};
+char a[]={"GET / HTTP/1.1\r\nHost: 127.0.0.1:8888\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0\r\n\r\n"};
 char *c;
 c=deal(a);
-//printf("%s\n",c );
-//har f[] = {"uhfahufueaifuhasfhaussdoakkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkfjiosaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:ufhaufsaiufasi"};
-int q=4323,w=22,e=32,r=2,t=3,y=4,u=7,o=9;
-printf("c=%s\n",c);
-int i=0;
-/*for (i=0;i<40;i++)
-	printf("%c\n",*(c+i) );
-*/
-return q+w+e+r+t+y+u+o;
+//printf("c=%s\n",c);
+free(c);
+return 0;
 }

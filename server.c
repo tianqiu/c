@@ -28,15 +28,40 @@ struct work_struct_data
 
 char * dealrequest(char *recvbuf,char *buf2)
 {
-    //char buf1[]={"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n<html><body><p>hhhhhhh</p></body></html>"};
-    char *b="HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n<html><body><p>hhhhhhh</p></body></html>";
-    //char buf1[20]={"2345asdadsad"}; 
-    //printk("\nbuf1==%s\n",buf1);
-    printk("B de dizhi:%d",b);
-    return b;
-    //printk("\n\n123445:%s\n\n",recvbuf);
-    //strcpy(buf2,buf1);
-    //printk("\n\nbuf2=:%send\n\n",buf2);     
+    struct file *fp;
+    mm_segment_t fs;
+    printk("hello enter\n");
+    fp = filp_open("/c/index3.html", O_RDWR | O_CREAT, 0644);
+    if (IS_ERR(fp)) {
+    printk("create file error\n");
+    return;
+    }
+    int iFileLen = 0;
+    iFileLen = vfs_llseek(fp, 0, SEEK_END);
+    printk("lenshi:%d", iFileLen);
+    char buf1[iFileLen+1];
+    memset(buf1,0,iFileLen+1);    
+    fs = get_fs();
+    set_fs(KERNEL_DS);
+    int ret=0;
+    loff_t pos;
+    pos = 0;
+    ret=vfs_read(fp, buf1, iFileLen, &pos);
+    
+    if (ret<=0)
+    {return 0;}
+    
+    printk("\nret=%d\n",ret);  
+    printk("read: %s\n", buf1);
+    filp_close(fp, NULL);
+    set_fs(fs);
+    //char *buf1="HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<html><body><p>hhhhhhh</p></body></html>";
+    char *b;
+    b=(char *)kmalloc(strlen(buf1),GFP_KERNEL);
+    //memset(b, 0, iFileLen*sizeof(char));
+    strcpy(b,buf1);
+    printk("\n1234567890::%d\n",strlen(buf1));
+    return b;    
 }
 
 static void work_handler(struct work_struct *work)  
@@ -60,49 +85,28 @@ static void work_handler(struct work_struct *work)
         vec.iov_len=1024;  
         int ret=0;
         ret=kernel_recvmsg(wsdata->client,&msg,&vec,1,1024,0);  
-        printk("receive message:\n %s\n",recvbuf);  
+        printk("receive message:\n%s\n",recvbuf); 
+        kfree(recvbuf); 
         printk("receive size=%d\n",ret);  
       
         char *buf2;
         buf2=dealrequest(recvbuf,buf2);
-         printk("\nbuf2 de dihzhi:%d\n",buf2);
+         //printk("\nbuf2 de dihzhi:%d\n",buf2);
         printk("\n\n%s\n\n",buf2);
-        return;
+    
         //send message to client ///////////////////////////////
-        
-        /*struct file *fp;
-        mm_segment_t fs;
-        loff_t pos;
-        printk("hello enter\n");
-        fp = filp_open("/c/index3.html", O_RDWR | O_CREAT, 0644);
-        if (IS_ERR(fp)) {
-        printk("create file error\n");
-        return;
-        }
-        int iFileLen = 0;
-        iFileLen = vfs_llseek(fp, 0, SEEK_END);
-        printk("lenshi:%d", iFileLen);
-        char buf1[iFileLen];    
-        fs = get_fs();
-        set_fs(KERNEL_DS);
-        pos = 0;
-        vfs_read(fp, buf1, iFileLen, &pos);
-        printk("read: %s\n", buf1);
-        filp_close(fp, NULL);
-        set_fs(fs);
-       */
         int len;
         //iFileLen=sizeof(buf2);
         len=strlen(buf2)*sizeof(char);
         printk("\n33==%s\nlen=%d\n",buf2,len);
         struct kvec vec2;  
         struct msghdr msg2;  
-        vec2.iov_base=buf2;  
+        vec2.iov_base=buf2; 
         vec2.iov_len=len;  
-        memset(&msg2,0,sizeof(msg2));  
-        ret= kernel_sendmsg(wsdata->client,&msg2,&vec2,1,len); 
-
-
+        memset(&msg2,0,sizeof(msg2));
+        ret= kernel_sendmsg(wsdata->client,&msg2,&vec2,1,len);
+        kfree(buf2);
+        buf2=NULL;
         //release client socket
         sock_release(wsdata->client);  
 }  
