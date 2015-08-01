@@ -12,6 +12,7 @@
 #include <linux/fs.h>
 #include <linux/workqueue.h> 
 #include <linux/slab.h> 
+#include <linux/sched.h>
 char * dealrequest(char *recvbuf,char *buf2);
 
 
@@ -28,40 +29,47 @@ struct work_struct_data
 
 char * dealrequest(char *recvbuf,char *buf2)
 {
-    struct file *fp;
-    mm_segment_t fs;
-    printk("hello enter\n");
-    fp = filp_open("/c/index3.html", O_RDWR | O_CREAT, 0644);
-    if (IS_ERR(fp)) {
-    printk("create file error\n");
-    return;
+    printk("kaishi==%s",recvbuf);
+    char *response=NULL;
+    char *method=NULL;
+    char *url=NULL;
+    method=strsep(&recvbuf," ");
+    url=strsep(&recvbuf," ");
+    printk("\nmethod==%s\n",method);
+    printk("\nurl==%s\n",url);
+    if(url==NULL)
+    {
+        return response;
     }
-    int iFileLen = 0;
-    iFileLen = vfs_llseek(fp, 0, SEEK_END);
-    printk("lenshi:%d", iFileLen);
-    char buf1[iFileLen+1];
-    memset(buf1,0,iFileLen+1);    
-    fs = get_fs();
-    set_fs(KERNEL_DS);
-    int ret=0;
-    loff_t pos;
-    pos = 0;
-    ret=vfs_read(fp, buf1, iFileLen, &pos);
-    
-    if (ret<=0)
-    {return 0;}
-    
-    printk("\nret=%d\n",ret);  
-    printk("read: %s\n", buf1);
-    filp_close(fp, NULL);
-    set_fs(fs);
-    //char *buf1="HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<html><body><p>hhhhhhh</p></body></html>";
-    char *b;
-    b=(char *)kmalloc(strlen(buf1),GFP_KERNEL);
-    //memset(b, 0, iFileLen*sizeof(char));
-    strcpy(b,buf1);
-    printk("\n1234567890::%d\n",strlen(buf1));
-    return b;    
+    if(strcmp(url,"/")==0)
+    {
+        struct file *fp;
+        mm_segment_t fs;
+        int ret=0;
+        int iFileLen = 0;
+        loff_t pos;
+        pos = 0;
+        printk("hello enter\n");
+        fp = filp_open("/c/www/index3.html", O_RDWR | O_CREAT, 0644);
+        if (IS_ERR(fp)) {
+        printk("create file error\n");
+        return response;
+        }
+        iFileLen = vfs_llseek(fp, 0, SEEK_END);
+        printk("lenshi:%d", iFileLen);
+        char buf1[iFileLen+1];
+        memset(buf1,0,iFileLen+1);    
+        fs = get_fs();
+        set_fs(KERNEL_DS);
+        ret=vfs_read(fp, buf1, iFileLen, &pos);
+        filp_close(fp, NULL);
+        set_fs(fs);   
+        response=(char *)kmalloc(strlen(buf1),GFP_KERNEL);
+        strcpy(response,buf1);
+        //printk("\n1234567890::%d\n",strlen(buf1));
+        return response;    
+    }
+    return response; 
 }
 
 static void work_handler(struct work_struct *work)  
@@ -86,11 +94,11 @@ static void work_handler(struct work_struct *work)
         int ret=0;
         ret=kernel_recvmsg(wsdata->client,&msg,&vec,1,1024,0);  
         printk("receive message:\n%s\n",recvbuf); 
-        kfree(recvbuf); 
         printk("receive size=%d\n",ret);  
       
         char *buf2;
         buf2=dealrequest(recvbuf,buf2);
+        kfree(recvbuf); 
          //printk("\nbuf2 de dihzhi:%d\n",buf2);
         printk("\n\n%s\n\n",buf2);
     

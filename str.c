@@ -7,26 +7,29 @@ char * dealrequest(char *a);
 
 char * dealrequest(char *request)
 {
+	char *response=NULL;
 	char *method=NULL;
 	char *url=NULL;
-
 	char *n=NULL;
 	printf("%s\n",request);
-	method=strtok(request," ");
-	url=strtok(NULL," ");
+	method=strsep(&request," ");
+	url=strsep(&request," ");
+	printf("%s\n",method );
+	printf("%s",url);
+	schedule_timeout_uninterruptible(11111000)
 	if(!url)
 	{
 		return n;
 	}
-	else
+	if (strcmp(url,"/")==0)
 	{
-		
+		printf("\nsadasdasda");
 	}
 	
 	
 	if(strcmp(method,"GET")==0)
 	{
-		printf("%s",url);
+		//printf("%s",url);
 	}	
 	return n;
 }
@@ -39,5 +42,6 @@ char *c;
 c=dealrequest(a);
 //printf("c=%s\n",c);
 free(c);
+c=NULL;
 return 0;
 }
