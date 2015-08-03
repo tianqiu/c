@@ -33,16 +33,17 @@ char * dealrequest(char *recvbuf,char *buf2)
     char *response=NULL;
     char *method=NULL;
     char *url=NULL;
-    char *path=NULL;
+    //char *path=NULL;
     method=strsep(&recvbuf," ");
     url=strsep(&recvbuf," ");
     printk("\nmethod==%s\n",method);
     printk("\nurl==%s\n",url);
     if(url==NULL)
     {
+        printk("\nnullnullnull\n");
         return response;
     }
-    path=strsep(&url,"?");
+    //path=strsep(&url,"?");
     if(strcmp(url,"/")==0)
     {
         struct file *fp;
@@ -71,10 +72,10 @@ char * dealrequest(char *recvbuf,char *buf2)
         //printk("\n1234567890::%d\n",strlen(buf1));
         return response;    
     }
-    if(strcmp(method,"GET")==0 || strcmp(method,"HEAD")==0)
+    /*else if(strcmp(method,"GET")==0 || strcmp(method,"HEAD")==0)
     {
         
-    }
+    }*/
     return response; 
 }
 
