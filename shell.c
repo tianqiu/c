@@ -19,7 +19,6 @@
 
 static int __init call_usermodehelper_init(void)
 	{
-		sys_pipe();
 	   int ret = -1;
 	   char path[] = "/bin/mkdir";
 	   char * envp[] = {NULL};

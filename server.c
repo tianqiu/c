@@ -13,6 +13,7 @@
 #include <linux/workqueue.h> 
 #include <linux/slab.h> 
 #include <linux/sched.h>
+#include <linux/kmod.h>
 char * dealrequest(char *recvbuf,char *buf2);
 
 
@@ -29,10 +30,10 @@ struct work_struct_data
 
 char * dealrequest(char *recvbuf,char *buf2)
 {
-    printk("kaishi==%s",recvbuf);
     char *response=NULL;
     char *method=NULL;
     char *url=NULL;
+    char *path=NULL;
     method=strsep(&recvbuf," ");
     url=strsep(&recvbuf," ");
     printk("\nmethod==%s\n",method);
@@ -41,6 +42,7 @@ char * dealrequest(char *recvbuf,char *buf2)
     {
         return response;
     }
+    path=strsep(&url,"?");
     if(strcmp(url,"/")==0)
     {
         struct file *fp;
@@ -68,6 +70,10 @@ char * dealrequest(char *recvbuf,char *buf2)
         strcpy(response,buf1);
         //printk("\n1234567890::%d\n",strlen(buf1));
         return response;    
+    }
+    if(strcmp(method,"GET")==0 || strcmp(method,"HEAD")==0)
+    {
+        
     }
     return response; 
 }
