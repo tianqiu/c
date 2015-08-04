@@ -36,8 +36,8 @@ char * dealrequest(char *recvbuf,char *buf2)
     //char *path=NULL;
     method=strsep(&recvbuf," ");
     url=strsep(&recvbuf," ");
-    printk("\nmethod==%s\n",method);
-    printk("\nurl==%s\n",url);
+    //printk("\nmethod==%s\n",method);
+    //printk("\nurl==%s\n",url);
     if(url==NULL)
     {
         printk("\nnullnullnull\n");
@@ -52,14 +52,14 @@ char * dealrequest(char *recvbuf,char *buf2)
         int iFileLen = 0;
         loff_t pos;
         pos = 0;
-        printk("hello enter\n");
+        //printk("hello enter\n");
         fp = filp_open("/c/www/index3.html", O_RDWR | O_CREAT, 0644);
         if (IS_ERR(fp)) {
-        printk("create file error\n");
+       //printk("create file error\n");
         return response;
         }
         iFileLen = vfs_llseek(fp, 0, SEEK_END);
-        printk("lenshi:%d", iFileLen);
+       // printk("lenshi:%d", iFileLen);
         char buf1[iFileLen+1];
         memset(buf1,0,iFileLen+1);    
         fs = get_fs();
@@ -69,7 +69,7 @@ char * dealrequest(char *recvbuf,char *buf2)
         set_fs(fs);   
         response=(char *)kmalloc(strlen(buf1),GFP_KERNEL);
         strcpy(response,buf1);
-        //printk("\n1234567890::%d\n",strlen(buf1));
+       // printk("\n1234567890::%d\n",strlen(buf1));
         return response;    
     }
     /*else if(strcmp(method,"GET")==0 || strcmp(method,"HEAD")==0)
@@ -100,20 +100,20 @@ static void work_handler(struct work_struct *work)
         vec.iov_len=1024;  
         int ret=0;
         ret=kernel_recvmsg(wsdata->client,&msg,&vec,1,1024,0);  
-        printk("receive message:\n%s\n",recvbuf); 
-        printk("receive size=%d\n",ret);  
+        //printk("receive message:\n%s\n",recvbuf); 
+        //printk("receive size=%d\n",ret);  
       
         char *buf2;
         buf2=dealrequest(recvbuf,buf2);
         kfree(recvbuf); 
          //printk("\nbuf2 de dihzhi:%d\n",buf2);
-        printk("\n\n%s\n\n",buf2);
+        //printk("\n\n%s\n\n",buf2);
     
         //send message to client ///////////////////////////////
         int len;
         //iFileLen=sizeof(buf2);
         len=strlen(buf2)*sizeof(char);
-        printk("\n33==%s\nlen=%d\n",buf2,len);
+        //printk("\n33==%s\nlen=%d\n",buf2,len);
         struct kvec vec2;  
         struct msghdr msg2;  
         vec2.iov_base=buf2; 
@@ -147,33 +147,33 @@ int myserver(void)
     {  
         printk("server:socket_create error!\n");  
     }  
-    printk("server:socket_create ok!\n");  
+    //printk("server:socket_create ok!\n");  
   
     /*set the socket can be reused*/  
     int val=1;  
     ret= kernel_setsockopt(sock,SOL_SOCKET,SO_REUSEADDR,(char *)&val,sizeof(val));  
     if(ret)
     {  
-        printk("kernel_setsockopt error!!!!!!!!!!!\n");  
+       // printk("kernel_setsockopt error!!!!!!!!!!!\n");  
     }  
   
     /*bind the socket*/  
     ret=sock->ops->bind(sock,(struct sockaddr *)&s_addr,sizeof(struct sockaddr_in));
     if(ret<0)
     {  
-        printk("server: bind error\n");  
+       // printk("server: bind error\n");  
         return ret;  
     }  
-    printk("server:bind ok!\n");  
+    //printk("server:bind ok!\n");  
     
     /*listen*/  
     ret=sock->ops->listen(sock,10);  
     if(ret<0)
     {  
-        printk("server: listen error\n");  
+       // printk("server: listen error\n");  
         return ret;  
     }  
-    printk("server:listen ok!\n");  
+    //printk("server:listen ok!\n");  
     
 
     my_wq = create_workqueue("my_queue");
@@ -203,7 +203,7 @@ int myserver(void)
                 ret = queue_work(my_wq, &wsdata->my_work);  
             }  
         }  
-        printk("server: accept ok, Connection Established,ret=%d\n",ret);    
+        //printk("server: accept ok, Connection Established,ret=%d\n",ret);    
     }
     
     sock_release(sock);  
