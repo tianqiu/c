@@ -1,14 +1,15 @@
 obj-m += server.o
-obj-m += paramirq.o
 obj-m += interrupt.o
 obj-m += workqueue2.o
 obj-m += timer.o
 obj-m += shell.o
+obj-m += netlinkserver.o
 
-CURRENT_PATH:=$(shell pwd)
-LINUX_KERNEL:=$(shell uname -r)
-LINUX_KERNEL_PATH:=/usr/src/kernels/$(LINUX_KERNEL)
-all:
-	make -C $(LINUX_KERNEL_PATH) M=$(CURRENT_PATH) modules
-clean:
-	make -C $(LINUX_KERNEL_PATH) M=$(CURRENT_PATH) clean
+KID := /lib/modules/`uname -r`/build  
+PWD := $(shell pwd)  
+  
+all:  
+	make -C $(KID) M=$(PWD) modules  
+  
+clean:  
+	rm -rf *.o .cmd *.ko *.mod.c .tmp_versions

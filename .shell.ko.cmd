@@ -1,1 +1,1 @@
-cmd_/c/shell.ko := ld -r -m elf_x86_64 -T /usr/src/kernels/3.10.0-123.el7.x86_64/scripts/module-common.lds --build-id  -o /c/shell.ko /c/shell.o /c/shell.mod.o
+cmd_/home/qiutian/c/shell.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/qiutian/c/shell.ko /home/qiutian/c/shell.o /home/qiutian/c/shell.mod.o

@@ -18,11 +18,13 @@ static const struct modversion_info ____versions[]
 __used
 __attribute__((section("__versions"))) = {
 	{ 0x53a8e63d, __VMLINUX_SYMBOL_STR(module_layout) },
-	{ 0xd5f2172f, __VMLINUX_SYMBOL_STR(del_timer_sync) },
-	{ 0xbe2c0274, __VMLINUX_SYMBOL_STR(add_timer) },
-	{ 0x593a99b, __VMLINUX_SYMBOL_STR(init_timer_key) },
-	{ 0x8834396c, __VMLINUX_SYMBOL_STR(mod_timer) },
-	{ 0x7d11c268, __VMLINUX_SYMBOL_STR(jiffies) },
+	{ 0x9ce03c2a, __VMLINUX_SYMBOL_STR(netlink_kernel_release) },
+	{ 0xa2368a07, __VMLINUX_SYMBOL_STR(__netlink_kernel_create) },
+	{ 0x8fc7f61a, __VMLINUX_SYMBOL_STR(init_net) },
+	{ 0xa4269b3f, __VMLINUX_SYMBOL_STR(netlink_unicast) },
+	{ 0xe914e41e, __VMLINUX_SYMBOL_STR(strcpy) },
+	{ 0x6695d4a5, __VMLINUX_SYMBOL_STR(__nlmsg_put) },
+	{ 0x483b5447, __VMLINUX_SYMBOL_STR(__alloc_skb) },
 	{ 0x27e1a049, __VMLINUX_SYMBOL_STR(printk) },
 	{ 0xbdfb6dbb, __VMLINUX_SYMBOL_STR(__fentry__) },
 };
@@ -33,4 +35,4 @@ __attribute__((section(".modinfo"))) =
 "depends=";
 
 
-MODULE_INFO(srcversion, "ABE22B06C0AFA323B489017");
+MODULE_INFO(srcversion, "A531CAFF33DB76287DA5786");

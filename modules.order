@@ -1,6 +1,6 @@
-kernel//c/server.ko
-kernel//c/paramirq.ko
-kernel//c/interrupt.ko
-kernel//c/workqueue2.ko
-kernel//c/timer.ko
-kernel//c/shell.ko
+kernel//home/qiutian/c/server.ko
+kernel//home/qiutian/c/interrupt.ko
+kernel//home/qiutian/c/workqueue2.ko
+kernel//home/qiutian/c/timer.ko
+kernel//home/qiutian/c/shell.ko
+kernel//home/qiutian/c/netlinkserver.ko
