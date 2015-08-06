@@ -12,4 +12,4 @@ all:
 	make -C $(KID) M=$(PWD) modules  
   
 clean:  
-	rm -fr *.o .*.cmd .tem_versions
+	rm -fr  .*.cmd .tem_versions  *.mod.c  *mod.o 
