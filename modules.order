@@ -5,3 +5,4 @@ kernel//home/qiutian/c/timer.ko
 kernel//home/qiutian/c/shell.ko
 kernel//home/qiutian/c/netlinkserver.ko
 kernel//home/qiutian/c/test_netlink_kmodule.ko
+kernel//home/qiutian/c/test_netlink_kmodule2.ko

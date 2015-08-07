@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     int len;
     struct nlmsghdr *nlh = NULL;
     struct sockaddr_nl  saddr, daddr;
-    char    *msg = "hello world";
+    char    *msg = "hello worla";
  
     len = strlen(msg);
     fd = socket(AF_NETLINK, SOCK_DGRAM, NETLINK_NETLINKTEST);

@@ -26,7 +26,7 @@ int netlink_test_echo(int fd, struct sockaddr_nl *daddr)
     int res;
     int len;
     struct nlmsghdr *nlh;
-    char    *msg = "hello world";
+    char    *msg = "hello worlb";
  
     len = strlen(msg);
     nlh = (struct nlmsghdr *)malloc(NLMSG_SPACE(len + 1));
@@ -56,7 +56,7 @@ int netlink_test_ping(int fd, struct sockaddr_nl *daddr)
     char    *ptr;
     int addr_len = sizeof(struct sockaddr_nl);
     struct nlmsghdr *nlh;
-    char    *msg = "hello world";
+    char    *msg = "hello worlb";
  
     len = strlen(msg);
     nlh = (struct nlmsghdr *)malloc(NLMSG_SPACE(len + 1));
@@ -163,9 +163,11 @@ int main(int argc, char *argv[])
     }
  
     netlink_test_echo(fd, &daddr);
+    printf("\n1done\n" );
     netlink_test_ping(fd, &daddr);
+    printf("\n2done\n" );
     netlink_test_compute(fd, &daddr);
- 
+    printf("\n3done\n" );
 error:
     close(fd);
     return res;
