@@ -1,61 +1,62 @@
-
-    #include <stdlib.h>  
-    #include <stdio.h>  
-    #include <unistd.h>  
-    #include <linux/netlink.h>  
-    #include <sys/socket.h>  
-    #include <strings.h>  
-    #include <string.h>  
-    #define NETLINK_TEST 31 // 自定义的协议号  
-    /** 消息类型 **/  
-    #define NLMSG_SETECHO 0x11  
-    #define NLMSG_GETECHO 0x12  
-    /** 最大协议负荷(固定) **/  
-    #define MAX_PAYLOAD 101  
-      
-    struct sockaddr_nl src_addr, dst_addr;  
-    struct iovec iov;  
-    int sockfd;  
-    struct nlmsghdr *nlh = NULL;  
-    struct msghdr msg;  
-      
-    int main( int argc, char **argv)  
-    {  
-      /*  if (argc != 2) {  
-            printf("\n%d\n",argc);
-            printf("usage: ./a.out <str>\n");  
-            exit(-1);  
-        }*/  
-      
-        sockfd = socket(PF_NETLINK, SOCK_DGRAM, NETLINK_TEST); // 创建NETLINK_TEST协议的socket  
-        /* 设置本地端点并绑定，用于侦听 */  
-        bzero(&src_addr, sizeof(src_addr));  
-        src_addr.nl_family = AF_NETLINK;  
-        src_addr.nl_pid = getpid();  
-        src_addr.nl_groups = 0; //未加入多播组  
-        bind(sockfd, (struct sockaddr*)&src_addr, sizeof(src_addr));  
-        /* 构造目的端点，用于发送 */  
-        bzero(&dst_addr, sizeof(dst_addr));  
-        dst_addr.nl_family = AF_NETLINK;  
-        dst_addr.nl_pid = 0; // 表示内核  
-        dst_addr.nl_groups = 0; //未指定接收多播组   
-        /* 构造发送消息 */  
-        nlh = malloc(NLMSG_SPACE(MAX_PAYLOAD));  
-        nlh->nlmsg_len = NLMSG_SPACE(MAX_PAYLOAD); //保证对齐  
-        nlh->nlmsg_pid = getpid();  /* self pid */  
-        nlh->nlmsg_flags = 0;  
-        nlh->nlmsg_type = NLMSG_GETECHO;  
-        strcpy(NLMSG_DATA(nlh), argv[1]);  
-        iov.iov_base = (void *)nlh;  
-        iov.iov_len = nlh->nlmsg_len;  
-        msg.msg_name = (void *)&dst_addr;  
-        msg.msg_namelen = sizeof(dst_addr);  
-        msg.msg_iov = &iov;  
-        msg.msg_iovlen = 1;  
-      
-        sendmsg(sockfd, &msg, 0); // 发送  
-        /* 接收消息并打印 */  
-        memset(nlh, 0, NLMSG_SPACE(MAX_PAYLOAD));  
-        recvmsg(sockfd, &msg, 0);  
-        printf(" Received message payload: %s\n",  NLMSG_DATA(nlh));  
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <malloc.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <linux/netlink.h>
+ 
+ 
+#define NETLINK_NETLINKTEST     22
+#define NETLINK_TEST_ECHO   0x10
+ 
+int main(int argc, char *argv[])
+{
+    int fd;
+    int res;
+    int len;
+    struct nlmsghdr *nlh = NULL;
+    struct sockaddr_nl  saddr, daddr;
+    char    *msg = "hello world";
+ 
+    len = strlen(msg);
+    fd = socket(AF_NETLINK, SOCK_DGRAM, NETLINK_NETLINKTEST);
+    if (!fd) {
+        printf("socket() error.\n");
+        return -1;
+    }
+ 
+    memset(&saddr, 0, sizeof(saddr));
+    saddr.nl_family = AF_NETLINK;
+    saddr.nl_pid = getpid();
+ 
+    memset(&daddr, 0, sizeof(daddr));
+    daddr.nl_family = AF_NETLINK;
+    daddr.nl_pid = 0;
+ 
+    res = bind(fd, (const struct sockaddr *)&saddr, sizeof(saddr));
+    if (res == -1) {
+        printf("bind() error.\n");
+        goto error;
+    }
+ 
+    nlh = (struct nlmsghdr *)malloc(NLMSG_SPACE(len + 1));
+    if (!nlh) {
+        printf("malloc() error.\n");
+        goto error;
+    }
+    nlh->nlmsg_type = NETLINK_TEST_ECHO;
+    nlh->nlmsg_flags = NLM_F_REQUEST;
+    nlh->nlmsg_seq = 0;
+    nlh->nlmsg_pid = getpid();
+    strcpy(NLMSG_DATA(nlh), msg);
+    nlh->nlmsg_len = NLMSG_LENGTH(len + 1);
+ 
+    res = sendto(fd, nlh, NLMSG_SPACE(len + 1), 0, (struct sockaddr *)&daddr, sizeof(daddr));
+    if (res == -1)
+        printf("send() error.\n");
+error:
+    free(nlh);
+    close(fd);
+    return res;
 }

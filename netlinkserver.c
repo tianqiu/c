@@ -68,4 +68,4 @@
       
     MODULE_LICENSE("GPL");  
     MODULE_DESCRIPTION("a simple example for custom netlink protocal family");  
-    MODULE_AUTHOR("RSLjdkt");  
+    MODULE_AUTHOR("RSLjdkt");   
