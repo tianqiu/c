@@ -4,3 +4,4 @@ kernel//home/qiutian/c/workqueue2.ko
 kernel//home/qiutian/c/timer.ko
 kernel//home/qiutian/c/shell.ko
 kernel//home/qiutian/c/netlinkserver.ko
+kernel//home/qiutian/c/test_netlink_kmodule.ko

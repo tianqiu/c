@@ -21,10 +21,11 @@
       
     int main( int argc, char **argv)  
     {  
-        if (argc != 2) {  
+      /*  if (argc != 2) {  
+            printf("\n%d\n",argc);
             printf("usage: ./a.out <str>\n");  
             exit(-1);  
-        }  
+        }*/  
       
         sockfd = socket(PF_NETLINK, SOCK_DGRAM, NETLINK_TEST); // 创建NETLINK_TEST协议的socket  
         /* 设置本地端点并绑定，用于侦听 */  

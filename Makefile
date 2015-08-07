@@ -4,6 +4,7 @@ obj-m += workqueue2.o
 obj-m += timer.o
 obj-m += shell.o
 obj-m += netlinkserver.o
+obj-m += test_netlink_kmodule.o
 
 KID := /lib/modules/`uname -r`/build  
 PWD := $(shell pwd)  
