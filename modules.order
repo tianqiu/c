@@ -1,4 +1,5 @@
 kernel//home/qiutian/c/server.ko
+kernel//home/qiutian/c/client.ko
 kernel//home/qiutian/c/interrupt.ko
 kernel//home/qiutian/c/workqueue2.ko
 kernel//home/qiutian/c/timer.ko

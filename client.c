@@ -9,7 +9,7 @@
 int myclient(void){  
     struct socket *sock;  
     struct sockaddr_in s_addr;  
-    unsigned short portnum=0x8870;  
+    unsigned short portnum=80;  
     int ret=0;  
   
     memset(&s_addr,0,sizeof(s_addr));  
@@ -36,8 +36,8 @@ int myclient(void){
     printk("client:connect ok!\n");  
       
     /*kmalloc sendbuf*/  
-    char sendbuf[]={"client messsage!"};
-    int len=sizeof("client message!");  
+    char sendbuf[]={"client messsage!\r\n\r\n"};
+    int len=sizeof("client message!\r\n\r\n");  
       
     /*send message */  
     struct kvec vec;  

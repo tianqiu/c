@@ -1,4 +1,5 @@
 obj-m += server.o
+obj-m += client.o
 obj-m += interrupt.o
 obj-m += workqueue2.o
 obj-m += timer.o
