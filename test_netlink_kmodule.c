@@ -22,8 +22,9 @@ MODULE_LICENSE("GPL");
 #define NLMSG_TEST_COMPUTE_SUB  1
 #define NLMSG_TEST_COMPUTE_MUL  2
 #define NLMSG_TEST_COMPUTE_DIV  3
- 
+
 static struct sock *nltest_sock;
+static struct sock *nltest_sock2;
  
 static int nltest_rcv_echo(struct sk_buff *skb, struct nlmsghdr *nlh)
 {
@@ -49,7 +50,6 @@ static int nltest_rcv_ping(struct sk_buff *in_skb, struct nlmsghdr *nlh)
     struct sk_buff  *skb;
     size_t payload = 0;
     int len = nlmsg_len(nlh);
- 
     payload = 4 + len;
     if (len > NLMSG_TEST_PING_MAXLEN)
         return -ERANGE;
@@ -134,16 +134,29 @@ static int nltest_rcv_msg(struct sk_buff *skb, struct nlmsghdr *nlh)
  
 static void nltest_rcv(struct sk_buff *skb)
 {
+  //  NETLINK_CB(skb).portid= 0;
+    printk("\n1\n");
     netlink_rcv_skb(skb, &nltest_rcv_msg);
 }
  
+static void nltest_rcv2(struct sk_buff *skb)
+{
+    printk("\n2\n");
+    netlink_rcv_skb(skb, &nltest_rcv_msg);
+}
+
 static int __init netlinktest_init(void)
 {
     struct netlink_kernel_cfg cfg = {
         .input  = nltest_rcv,
     };
- 
+     struct netlink_kernel_cfg cfg2 = {
+        .input  = nltest_rcv2,
+    };
+
+
     nltest_sock = netlink_kernel_create(&init_net, NETLINK_NETLINKTEST, &cfg);
+    nltest_sock2= netlink_kernel_create(&init_net, NETLINK_NETLINKTEST, &cfg2);
     if (!nltest_sock)
         return -ENOMEM;
     printk(KERN_INFO"Enter netlink test module.\n");
@@ -153,7 +166,9 @@ static int __init netlinktest_init(void)
 static void __exit netlinktest_exit(void)
 {
     printk(KERN_INFO"Leave netlink test module.\n");
+  //  netlink_kernel_release(so1);
     netlink_kernel_release(nltest_sock);
+    netlink_kernel_release(nltest_sock2);
 }
  
 module_init(netlinktest_init);
