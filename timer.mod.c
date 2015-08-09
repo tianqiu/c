@@ -17,7 +17,7 @@ __attribute__((section(".gnu.linkonce.this_module"))) = {
 static const struct modversion_info ____versions[]
 __used
 __attribute__((section("__versions"))) = {
-	{ 0x53a8e63d, __VMLINUX_SYMBOL_STR(module_layout) },
+	{ 0xb89a34a1, __VMLINUX_SYMBOL_STR(module_layout) },
 	{ 0xd5f2172f, __VMLINUX_SYMBOL_STR(del_timer_sync) },
 	{ 0xbe2c0274, __VMLINUX_SYMBOL_STR(add_timer) },
 	{ 0x593a99b, __VMLINUX_SYMBOL_STR(init_timer_key) },

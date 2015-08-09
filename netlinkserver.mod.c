@@ -17,11 +17,11 @@ __attribute__((section(".gnu.linkonce.this_module"))) = {
 static const struct modversion_info ____versions[]
 __used
 __attribute__((section("__versions"))) = {
-	{ 0x53a8e63d, __VMLINUX_SYMBOL_STR(module_layout) },
-	{ 0x9ce03c2a, __VMLINUX_SYMBOL_STR(netlink_kernel_release) },
-	{ 0xa2368a07, __VMLINUX_SYMBOL_STR(__netlink_kernel_create) },
-	{ 0x8fc7f61a, __VMLINUX_SYMBOL_STR(init_net) },
-	{ 0x52824d3f, __VMLINUX_SYMBOL_STR(netlink_rcv_skb) },
+	{ 0xb89a34a1, __VMLINUX_SYMBOL_STR(module_layout) },
+	{ 0x8730ec54, __VMLINUX_SYMBOL_STR(netlink_kernel_release) },
+	{ 0xe3f86d68, __VMLINUX_SYMBOL_STR(__netlink_kernel_create) },
+	{ 0x557b0bdf, __VMLINUX_SYMBOL_STR(init_net) },
+	{ 0x906e6bc7, __VMLINUX_SYMBOL_STR(netlink_rcv_skb) },
 	{ 0x27e1a049, __VMLINUX_SYMBOL_STR(printk) },
 	{ 0xbdfb6dbb, __VMLINUX_SYMBOL_STR(__fentry__) },
 };

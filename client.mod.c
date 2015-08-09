@@ -17,14 +17,14 @@ __attribute__((section(".gnu.linkonce.this_module"))) = {
 static const struct modversion_info ____versions[]
 __used
 __attribute__((section("__versions"))) = {
-	{ 0x53a8e63d, __VMLINUX_SYMBOL_STR(module_layout) },
-	{ 0xd85ce98, __VMLINUX_SYMBOL_STR(sock_release) },
+	{ 0xb89a34a1, __VMLINUX_SYMBOL_STR(module_layout) },
+	{ 0xb266e2a2, __VMLINUX_SYMBOL_STR(sock_release) },
 	{ 0xdb7305a1, __VMLINUX_SYMBOL_STR(__stack_chk_fail) },
-	{ 0x291d6b04, __VMLINUX_SYMBOL_STR(kernel_sendmsg) },
+	{ 0x654730ed, __VMLINUX_SYMBOL_STR(kernel_sendmsg) },
 	{ 0x27e1a049, __VMLINUX_SYMBOL_STR(printk) },
-	{ 0x77a8dbb2, __VMLINUX_SYMBOL_STR(sock_create_kern) },
-	{ 0x215b60b8, __VMLINUX_SYMBOL_STR(kmem_cache_alloc_trace) },
-	{ 0x83b32430, __VMLINUX_SYMBOL_STR(kmalloc_caches) },
+	{ 0x77ba2da7, __VMLINUX_SYMBOL_STR(sock_create_kern) },
+	{ 0x3b88f3a0, __VMLINUX_SYMBOL_STR(kmem_cache_alloc_trace) },
+	{ 0x16e17547, __VMLINUX_SYMBOL_STR(kmalloc_caches) },
 	{ 0x1b6314fd, __VMLINUX_SYMBOL_STR(in_aton) },
 	{ 0xbdfb6dbb, __VMLINUX_SYMBOL_STR(__fentry__) },
 };

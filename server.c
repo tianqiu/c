@@ -33,6 +33,7 @@ char * dealrequest(char *recvbuf,char *buf2)
     char *response=NULL;
     char *method=NULL;
     char *url=NULL;
+    char error[]={"HTTP/1.1 200 OK \r\nContent-Type: text/html\r\n\r\n<html><body><p>hello</p><p>There is some errors</p></body><html>"};
     //char *path=NULL;
     method=strsep(&recvbuf," ");
     url=strsep(&recvbuf," ");
@@ -44,8 +45,7 @@ char * dealrequest(char *recvbuf,char *buf2)
         return response;
     }
     //path=strsep(&url,"?");
-    if(1)
-    //if(strcmp(url,"/")==0)
+    if(strcmp(url,"/")==0)
     {
         struct file *fp;
         mm_segment_t fs;
@@ -55,9 +55,12 @@ char * dealrequest(char *recvbuf,char *buf2)
         pos = 0;
         //printk("hello enter\n");
         fp = filp_open("/home/qiutian/c/www/index3.html", O_RDWR | O_CREAT, 0644);
-        if (IS_ERR(fp)) {
+        if (IS_ERR(fp)) 
+        {
        //printk("create file error\n");
-        return response;
+            response=(char *)kmalloc(strlen(error)+1,GFP_KERNEL);
+            strcpy(response,error);
+            return response;
         }
         iFileLen = vfs_llseek(fp, 0, SEEK_END);
        // printk("lenshi:%d", iFileLen);
@@ -68,7 +71,7 @@ char * dealrequest(char *recvbuf,char *buf2)
         ret=vfs_read(fp, buf1, iFileLen, &pos);
         filp_close(fp, NULL);
         set_fs(fs);   
-        response=(char *)kmalloc(strlen(buf1),GFP_KERNEL);
+        response=(char *)kmalloc(strlen(buf1)+1,GFP_KERNEL);
         strcpy(response,buf1);
        // printk("\n1234567890::%d\n",strlen(buf1));
         return response;    

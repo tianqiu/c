@@ -17,30 +17,30 @@ __attribute__((section(".gnu.linkonce.this_module"))) = {
 static const struct modversion_info ____versions[]
 __used
 __attribute__((section("__versions"))) = {
-	{ 0x53a8e63d, __VMLINUX_SYMBOL_STR(module_layout) },
+	{ 0xb89a34a1, __VMLINUX_SYMBOL_STR(module_layout) },
 	{ 0x8c03d20c, __VMLINUX_SYMBOL_STR(destroy_workqueue) },
 	{ 0x42160169, __VMLINUX_SYMBOL_STR(flush_workqueue) },
 	{ 0x2e0d2f7f, __VMLINUX_SYMBOL_STR(queue_work_on) },
-	{ 0xc95a2e02, __VMLINUX_SYMBOL_STR(kernel_accept) },
+	{ 0x5847ed40, __VMLINUX_SYMBOL_STR(kernel_accept) },
 	{ 0x43a53735, __VMLINUX_SYMBOL_STR(__alloc_workqueue_key) },
-	{ 0xdb7305a1, __VMLINUX_SYMBOL_STR(__stack_chk_fail) },
-	{ 0x281157d0, __VMLINUX_SYMBOL_STR(kernel_setsockopt) },
-	{ 0x77a8dbb2, __VMLINUX_SYMBOL_STR(sock_create_kern) },
-	{ 0xd85ce98, __VMLINUX_SYMBOL_STR(sock_release) },
-	{ 0x291d6b04, __VMLINUX_SYMBOL_STR(kernel_sendmsg) },
+	{ 0xce3c5de1, __VMLINUX_SYMBOL_STR(kernel_setsockopt) },
+	{ 0x77ba2da7, __VMLINUX_SYMBOL_STR(sock_create_kern) },
+	{ 0xb266e2a2, __VMLINUX_SYMBOL_STR(sock_release) },
+	{ 0x654730ed, __VMLINUX_SYMBOL_STR(kernel_sendmsg) },
 	{ 0x37a0cba, __VMLINUX_SYMBOL_STR(kfree) },
-	{ 0x37c7257, __VMLINUX_SYMBOL_STR(kernel_recvmsg) },
-	{ 0x215b60b8, __VMLINUX_SYMBOL_STR(kmem_cache_alloc_trace) },
-	{ 0x83b32430, __VMLINUX_SYMBOL_STR(kmalloc_caches) },
+	{ 0x23f0af8a, __VMLINUX_SYMBOL_STR(kernel_recvmsg) },
+	{ 0x3b88f3a0, __VMLINUX_SYMBOL_STR(kmem_cache_alloc_trace) },
+	{ 0x16e17547, __VMLINUX_SYMBOL_STR(kmalloc_caches) },
+	{ 0xdb7305a1, __VMLINUX_SYMBOL_STR(__stack_chk_fail) },
 	{ 0xe914e41e, __VMLINUX_SYMBOL_STR(strcpy) },
 	{ 0xd2b09ce5, __VMLINUX_SYMBOL_STR(__kmalloc) },
 	{ 0x754d539c, __VMLINUX_SYMBOL_STR(strlen) },
-	{ 0x29b6778, __VMLINUX_SYMBOL_STR(filp_close) },
-	{ 0x19b6234f, __VMLINUX_SYMBOL_STR(vfs_read) },
+	{ 0xdf03232a, __VMLINUX_SYMBOL_STR(filp_close) },
+	{ 0xe6180cb1, __VMLINUX_SYMBOL_STR(vfs_read) },
 	{ 0xfb578fc5, __VMLINUX_SYMBOL_STR(memset) },
 	{ 0x4c4fef19, __VMLINUX_SYMBOL_STR(kernel_stack) },
-	{ 0x8201be58, __VMLINUX_SYMBOL_STR(vfs_llseek) },
-	{ 0x72a95928, __VMLINUX_SYMBOL_STR(filp_open) },
+	{ 0x59ca1b95, __VMLINUX_SYMBOL_STR(vfs_llseek) },
+	{ 0x75be2ad4, __VMLINUX_SYMBOL_STR(filp_open) },
 	{ 0x27e1a049, __VMLINUX_SYMBOL_STR(printk) },
 	{ 0x85df9b6c, __VMLINUX_SYMBOL_STR(strsep) },
 	{ 0xbdfb6dbb, __VMLINUX_SYMBOL_STR(__fentry__) },
@@ -52,4 +52,4 @@ __attribute__((section(".modinfo"))) =
 "depends=";
 
 
-MODULE_INFO(srcversion, "B7C9A93E258C3CD5757CCC1");
+MODULE_INFO(srcversion, "C6EE8E971B981782B4E914B");
