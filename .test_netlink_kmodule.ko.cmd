@@ -1,0 +1,1 @@
+cmd_/home/qiutian/c/test_netlink_kmodule.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/qiutian/c/test_netlink_kmodule.ko /home/qiutian/c/test_netlink_kmodule.o /home/qiutian/c/test_netlink_kmodule.mod.o

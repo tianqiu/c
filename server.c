@@ -36,15 +36,16 @@ char * dealrequest(char *recvbuf,char *buf2)
     //char *path=NULL;
     method=strsep(&recvbuf," ");
     url=strsep(&recvbuf," ");
-    //printk("\nmethod==%s\n",method);
-    //printk("\nurl==%s\n",url);
+    printk("\nmethod==%s\n",method);
+    printk("\nurl==%s\n",url);
     if(url==NULL)
     {
         printk("\nnullnullnull\n");
         return response;
     }
     //path=strsep(&url,"?");
-    if(strcmp(url,"/")==0)
+    if(1)
+    //if(strcmp(url,"/")==0)
     {
         struct file *fp;
         mm_segment_t fs;
@@ -53,7 +54,7 @@ char * dealrequest(char *recvbuf,char *buf2)
         loff_t pos;
         pos = 0;
         //printk("hello enter\n");
-        fp = filp_open("/c/www/index3.html", O_RDWR | O_CREAT, 0644);
+        fp = filp_open("/home/qiutian/c/www/index3.html", O_RDWR | O_CREAT, 0644);
         if (IS_ERR(fp)) {
        //printk("create file error\n");
         return response;

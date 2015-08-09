@@ -1,0 +1,1 @@
+cmd_/home/qiutian/c/netlinkserver.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/qiutian/c/netlinkserver.ko /home/qiutian/c/netlinkserver.o /home/qiutian/c/netlinkserver.mod.o
