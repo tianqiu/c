@@ -42,6 +42,8 @@ char * dealrequest(char *recvbuf,char *buf2)
     if(url==NULL)
     {
         printk("\nnullnullnull\n");
+        response=(char *)kmalloc(strlen(error)+1,GFP_KERNEL);
+        strcpy(response,error);
         return response;
     }
     //path=strsep(&url,"?");
@@ -80,6 +82,9 @@ char * dealrequest(char *recvbuf,char *buf2)
     {
         
     }*/
+    response=(char *)kmalloc(strlen(error)+1,GFP_KERNEL);
+    strcpy(response,error);
+    printk("\nout\n");
     return response; 
 }
 

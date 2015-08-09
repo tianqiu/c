@@ -32,15 +32,15 @@ __attribute__((section("__versions"))) = {
 	{ 0x3b88f3a0, __VMLINUX_SYMBOL_STR(kmem_cache_alloc_trace) },
 	{ 0x16e17547, __VMLINUX_SYMBOL_STR(kmalloc_caches) },
 	{ 0xdb7305a1, __VMLINUX_SYMBOL_STR(__stack_chk_fail) },
-	{ 0xe914e41e, __VMLINUX_SYMBOL_STR(strcpy) },
-	{ 0xd2b09ce5, __VMLINUX_SYMBOL_STR(__kmalloc) },
-	{ 0x754d539c, __VMLINUX_SYMBOL_STR(strlen) },
 	{ 0xdf03232a, __VMLINUX_SYMBOL_STR(filp_close) },
 	{ 0xe6180cb1, __VMLINUX_SYMBOL_STR(vfs_read) },
 	{ 0xfb578fc5, __VMLINUX_SYMBOL_STR(memset) },
 	{ 0x4c4fef19, __VMLINUX_SYMBOL_STR(kernel_stack) },
 	{ 0x59ca1b95, __VMLINUX_SYMBOL_STR(vfs_llseek) },
 	{ 0x75be2ad4, __VMLINUX_SYMBOL_STR(filp_open) },
+	{ 0xe914e41e, __VMLINUX_SYMBOL_STR(strcpy) },
+	{ 0xd2b09ce5, __VMLINUX_SYMBOL_STR(__kmalloc) },
+	{ 0x754d539c, __VMLINUX_SYMBOL_STR(strlen) },
 	{ 0x27e1a049, __VMLINUX_SYMBOL_STR(printk) },
 	{ 0x85df9b6c, __VMLINUX_SYMBOL_STR(strsep) },
 	{ 0xbdfb6dbb, __VMLINUX_SYMBOL_STR(__fentry__) },
@@ -52,4 +52,4 @@ __attribute__((section(".modinfo"))) =
 "depends=";
 
 
-MODULE_INFO(srcversion, "C6EE8E971B981782B4E914B");
+MODULE_INFO(srcversion, "5C574EAD9F2299A35141E0C");
