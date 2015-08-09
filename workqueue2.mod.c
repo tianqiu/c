@@ -17,12 +17,12 @@ __attribute__((section(".gnu.linkonce.this_module"))) = {
 static const struct modversion_info ____versions[]
 __used
 __attribute__((section("__versions"))) = {
-	{ 0xb89a34a1, __VMLINUX_SYMBOL_STR(module_layout) },
+	{ 0x53a8e63d, __VMLINUX_SYMBOL_STR(module_layout) },
 	{ 0x8c03d20c, __VMLINUX_SYMBOL_STR(destroy_workqueue) },
 	{ 0x42160169, __VMLINUX_SYMBOL_STR(flush_workqueue) },
 	{ 0x2e0d2f7f, __VMLINUX_SYMBOL_STR(queue_work_on) },
-	{ 0x3b88f3a0, __VMLINUX_SYMBOL_STR(kmem_cache_alloc_trace) },
-	{ 0x16e17547, __VMLINUX_SYMBOL_STR(kmalloc_caches) },
+	{ 0x215b60b8, __VMLINUX_SYMBOL_STR(kmem_cache_alloc_trace) },
+	{ 0x83b32430, __VMLINUX_SYMBOL_STR(kmalloc_caches) },
 	{ 0x43a53735, __VMLINUX_SYMBOL_STR(__alloc_workqueue_key) },
 	{ 0x27e1a049, __VMLINUX_SYMBOL_STR(printk) },
 	{ 0xbdfb6dbb, __VMLINUX_SYMBOL_STR(__fentry__) },

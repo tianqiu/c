@@ -75,7 +75,6 @@ char * dealrequest(char *recvbuf,char *buf2)
         set_fs(fs);   
         response=(char *)kmalloc(strlen(buf1)+1,GFP_KERNEL);
         strcpy(response,buf1);
-       // printk("\n1234567890::%d\n",strlen(buf1));
         return response;    
     }
     /*else if(strcmp(method,"GET")==0 || strcmp(method,"HEAD")==0)
