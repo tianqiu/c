@@ -56,7 +56,34 @@ int myclient(void){
     }  
     printk("client send size=%d\n",ret);  
     printk("client:send ok!\n");  
-  
+    
+
+//////////////////////////////
+
+
+    char *recvbuf=NULL;  
+        recvbuf=kmalloc(1024,GFP_KERNEL);  
+        if(recvbuf==NULL)
+        {  
+            printk("server: recvbuf kmalloc error!\n");  
+            return  0;  
+        }  
+        memset(recvbuf, 0, sizeof(recvbuf));  
+
+        struct kvec vec2;  
+        struct msghdr msg2;  
+        memset(&vec2,0,sizeof(vec2));  
+        memset(&msg2,0,sizeof(msg2));  
+        vec2.iov_base=recvbuf;  
+        vec2.iov_len=1024;  
+        ret=kernel_recvmsg(sock,&msg2,&vec2,1,1024,0);  
+        printk("\n%s\n",recvbuf);
+    ////////////////////////////////
+
+
+
+
+
     sock_release(sock);  
     return ret;  
 }  
